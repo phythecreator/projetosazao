@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Galeria de Carros - Explora diferentes modelos com descrições, estatísticas (cavalos, torque, peso, aceleração), cores disponíveis e preços estimados.">
-    <title>AutoVision • Galeria de Carros</title>
+    <meta name="description" content="Galeria de Carros 2026 - Com imagens reais, descrições, estatísticas e customização ao vivo.">
+    <title>AutoVision • Galeria de Carros 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
-        
-        :root {
-            --tw-color-primary: #ff0000;
-        }
         
         body {
             font-family: 'Inter', system_ui, sans-serif;
@@ -45,12 +41,30 @@
         }
         
         .color-swatch {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
         
         .color-swatch:hover {
-            transform: scale(1.15);
-            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.3);
+            transform: scale(1.2);
+            box-shadow: 0 0 0 6px rgba(255,255,255,0.4);
+        }
+        
+        .color-swatch.selected {
+            transform: scale(1.25);
+            box-shadow: 0 0 0 6px #ff0000;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            mix-blend-mode: multiply;
+            opacity: 0.25;
+            transition: all 0.4s ease;
         }
     </style>
 </head>
@@ -58,7 +72,6 @@
     <!-- NAVBAR -->
     <nav class="bg-black border-b border-zinc-800 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <!-- Logo -->
             <div class="flex items-center gap-x-3">
                 <div class="w-10 h-10 bg-red-600 rounded-2xl flex items-center justify-center text-2xl">
                     <i class="fa-solid fa-car-side"></i>
@@ -66,22 +79,15 @@
                 <h1 class="title-font text-3xl tracking-tighter">AutoVision</h1>
             </div>
             
-            <!-- Menu -->
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
                 <a href="#hero" class="hover:text-red-500 transition-colors">Início</a>
                 <a href="#carros" class="hover:text-red-500 transition-colors">Carros</a>
                 <a href="#sobre" class="hover:text-red-500 transition-colors">Sobre</a>
-                <a href="#contacto" class="hover:text-red-500 transition-colors">Contacto</a>
             </div>
             
             <div class="flex items-center gap-x-4">
                 <button onclick="toggleDarkMode()" class="p-3 hover:bg-zinc-800 rounded-2xl transition-colors">
                     <i class="fa-solid fa-moon text-xl"></i>
-                </button>
-                <button onclick="window.location.reload()" 
-                        class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-3xl font-semibold flex items-center gap-x-2 transition-all">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    <span>Actualizar</span>
                 </button>
             </div>
         </div>
@@ -91,155 +97,91 @@
     <section id="hero" class="hero-bg h-screen flex items-center">
         <div class="max-w-7xl mx-auto px-6 pt-20">
             <div class="max-w-2xl">
-                <div class="inline-flex items-center gap-x-2 bg-white/10 backdrop-blur-md px-6 py-3 rounded-3xl text-sm mb-6">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                    </span>
-                    Novos modelos 2026
-                </div>
-                
                 <h1 class="title-font text-7xl md:text-8xl leading-none tracking-tighter mb-6">
-                    DESCUBRE O<br>MUNDO DOS<br><span class="text-red-500">CARROS</span>
+                    OS TEUS<br>CARROS<br><span class="text-red-500">2026</span>
                 </h1>
-                
                 <p class="text-xl text-zinc-300 mb-10">
-                    Estatísticas reais, descrições detalhadas, cores disponíveis e preços estimados de 6 dos melhores carros do mercado.
+                    5 carros reais • Imagens tuas • Estatísticas completas • <strong>Customiza ao vivo</strong>
                 </p>
-                
-                <div class="flex items-center gap-x-4">
-                    <a href="#carros" 
-                       class="bg-red-600 hover:bg-red-700 px-8 py-5 rounded-3xl font-semibold text-lg flex items-center gap-x-3 transition-all">
-                        Ver todos os carros
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </a>
-                    <button onclick="showRandomCar()" 
-                            class="border border-white/30 hover:bg-white/10 px-8 py-5 rounded-3xl font-medium flex items-center gap-x-3 transition-all">
-                        <i class="fa-solid fa-dice"></i>
-                        Carro aleatório
-                    </button>
-                </div>
-                
-                <div class="mt-16 flex items-center gap-x-12 text-sm">
-                    <div>
-                        <span class="block text-4xl font-semibold text-red-500">6</span>
-                        <span class="text-zinc-400">Modelos premium</span>
-                    </div>
-                    <div>
-                        <span class="block text-4xl font-semibold text-red-500">28</span>
-                        <span class="text-zinc-400">Cores disponíveis</span>
-                    </div>
-                    <div>
-                        <span class="block text-4xl font-semibold text-red-500">100%</span>
-                        <span class="text-zinc-400">Responsivo</span>
-                    </div>
-                </div>
+                <a href="#carros" class="bg-red-600 hover:bg-red-700 px-8 py-5 rounded-3xl font-semibold text-lg inline-flex items-center gap-x-3">
+                    Ver os 5 carros
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
             </div>
-        </div>
-        
-        <!-- Scroll indicator -->
-        <div class="absolute bottom-10 left-1/2 flex flex-col items-center gap-y-2 text-xs tracking-widest">
-            <span>DESCE PARA EXPLORAR</span>
-            <i class="fa-solid fa-chevron-down animate-bounce"></i>
         </div>
     </section>
 
     <!-- CARROS SECTION -->
     <section id="carros" class="max-w-7xl mx-auto px-6 py-20">
-        <div class="flex items-end justify-between mb-12">
-            <div>
-                <span class="uppercase text-red-500 text-sm font-semibold tracking-widest">Galeria 2026</span>
-                <h2 class="title-font text-5xl tracking-tighter">Os nossos carros em destaque</h2>
-            </div>
-            
-            <!-- Filtros -->
-            <div class="flex items-center gap-x-3 text-sm">
-                <button onclick="filterCars('all')" 
-                        id="filter-all"
-                        class="active-filter px-6 py-3 rounded-3xl bg-white text-black font-medium flex items-center gap-x-2">
-                    <i class="fa-solid fa-list"></i>
-                    Todos
-                </button>
-                <button onclick="filterCars('eletrico')" 
-                        id="filter-eletrico"
-                        class="px-6 py-3 rounded-3xl border border-white/20 hover:border-white/40 transition-colors flex items-center gap-x-2">
-                    <i class="fa-solid fa-bolt"></i>
-                    Elétricos
-                </button>
-                <button onclick="filterCars('desportivo')" 
-                        id="filter-desportivo"
-                        class="px-6 py-3 rounded-3xl border border-white/20 hover:border-white/40 transition-colors flex items-center gap-x-2">
-                    <i class="fa-solid fa-flag-checkered"></i>
-                    Desportivos
-                </button>
-                <button onclick="filterCars('muscle')" 
-                        id="filter-muscle"
-                        class="px-6 py-3 rounded-3xl border border-white/20 hover:border-white/40 transition-colors flex items-center gap-x-2">
-                    <i class="fa-solid fa-fire"></i>
-                    Muscle
-                </button>
-            </div>
-        </div>
-
-        <!-- Grid de carros -->
+        <h2 class="title-font text-5xl tracking-tighter mb-12 text-center">Os teus 5 carros em destaque</h2>
+        
         <div id="cars-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Os carros são gerados via JavaScript -->
+            <!-- Gerados via JS -->
         </div>
     </section>
 
-    <!-- MODAL DETALHES DO CARRO -->
+    <!-- MODAL COM CUSTOMIZAÇÃO -->
     <div id="car-modal" onclick="if(event.target === this) hideModal()" 
          class="hidden fixed inset-0 bg-black/80 backdrop-blur-lg z-[9999] flex items-center justify-center p-6">
+        
         <div onclick="event.stopImmediatePropagation()" 
-             class="modal bg-zinc-900 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+             class="modal bg-zinc-900 rounded-3xl max-w-5xl w-full overflow-hidden">
             
-            <div class="flex">
-                <!-- Imagem principal -->
-                <div id="modal-image" class="w-1/2 bg-zinc-800 min-h-[500px] relative">
-                    <!-- Imagem é inserida via JS -->
+            <div class="flex flex-col lg:flex-row">
+                <!-- Imagem + Preview de customização -->
+                <div id="modal-image-container" class="lg:w-1/2 bg-zinc-800 relative min-h-[520px] flex items-center justify-center overflow-hidden">
+                    <!-- Imagem + overlay de cor serão inseridos via JS -->
+                    <div id="modal-image" class="relative w-full h-full"></div>
                 </div>
                 
-                <!-- Conteúdo -->
-                <div class="w-1/2 p-10 overflow-auto">
+                <!-- Painel de detalhes e customização -->
+                <div class="lg:w-1/2 p-8 lg:p-10 flex flex-col">
                     <div class="flex justify-between items-start mb-6">
                         <div>
-                            <span id="modal-type-badge" class="px-4 py-1 text-xs font-semibold rounded-3xl"></span>
-                            <h2 id="modal-name" class="title-font text-4xl tracking-tighter mt-2"></h2>
+                            <span id="modal-type-badge" class="px-5 py-1 text-xs font-semibold rounded-3xl"></span>
+                            <h2 id="modal-name" class="title-font text-4xl tracking-tighter mt-3"></h2>
                         </div>
-                        <button onclick="hideModal()" class="text-4xl leading-none text-zinc-400 hover:text-white">×</button>
+                        <button onclick="hideModal()" class="text-5xl leading-none text-zinc-400 hover:text-white">×</button>
                     </div>
-                    
-                    <p id="modal-description" class="text-zinc-300 leading-relaxed text-lg mb-8"></p>
-                    
-                    <!-- Estatísticas -->
-                    <h3 class="text-red-500 font-semibold mb-4 flex items-center gap-x-2">
-                        <i class="fa-solid fa-chart-simple"></i>
-                        ESTATÍSTICAS
-                    </h3>
-                    <div id="modal-stats" class="grid grid-cols-2 gap-6 mb-10">
-                        <!-- Stats preenchidos via JS -->
+
+                    <p id="modal-description" class="text-zinc-300 leading-relaxed mb-8"></p>
+
+                    <!-- ESTATÍSTICAS -->
+                    <div class="mb-8">
+                        <h3 class="text-red-500 text-sm font-semibold mb-3 flex items-center gap-2"><i class="fa-solid fa-chart-simple"></i> CARACTERÍSTICAS</h3>
+                        <div id="modal-stats" class="grid grid-cols-2 gap-4"></div>
                     </div>
-                    
-                    <!-- Cores -->
-                    <h3 class="text-red-500 font-semibold mb-4 flex items-center gap-x-2">
-                        <i class="fa-solid fa-palette"></i>
-                        CORES DISPONÍVEIS
-                    </h3>
-                    <div id="modal-colors" class="flex gap-x-4 flex-wrap">
-                        <!-- Cores preenchidas via JS -->
-                    </div>
-                    
-                    <!-- Preço -->
-                    <div class="mt-10 pt-8 border-t border-zinc-700 flex items-end justify-between">
-                        <div>
-                            <span class="text-zinc-400 text-sm">Preço estimado (2026)</span>
-                            <div id="modal-price" class="text-5xl font-semibold title-font"></div>
-                        </div>
+
+                    <!-- CUSTOMIZAÇÃO -->
+                    <div class="flex-1">
+                        <h3 class="text-red-500 text-sm font-semibold mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-palette"></i> CUSTOMIZA O CARRO
+                        </h3>
                         
+                        <div id="modal-colors" class="flex flex-wrap gap-6 mb-6"></div>
+
+                        <div class="bg-zinc-800 rounded-2xl p-5 mb-6">
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-zinc-400">Cor selecionada:</span>
+                                <span id="selected-color-name" class="font-medium">Nenhuma ainda</span>
+                            </div>
+                            <div id="color-preview-bar" class="h-3 rounded-3xl transition-all"></div>
+                        </div>
+
+                        <div class="text-xs text-zinc-400 mb-2">Preço estimado (customizado)</div>
+                        <div id="modal-price" class="text-4xl font-semibold title-font text-red-500"></div>
+                        <p id="price-note" class="text-xs text-emerald-400 mt-1"></p>
+                    </div>
+
+                    <div class="mt-auto pt-6 border-t border-zinc-700 flex gap-4">
+                        <button onclick="saveCustomization()" 
+                                class="flex-1 bg-emerald-600 hover:bg-emerald-700 py-5 rounded-3xl font-semibold flex items-center justify-center gap-x-3">
+                            <i class="fa-solid fa-save"></i>
+                            GUARDAR CUSTOMIZAÇÃO
+                        </button>
                         <button onclick="hideModal()" 
-                                class="bg-red-600 hover:bg-red-700 px-10 py-6 rounded-3xl text-lg font-semibold flex items-center gap-x-3">
-                            Fechar
-                            <i class="fa-solid fa-xmark"></i>
+                                class="flex-1 border border-white/30 hover:bg-white/10 py-5 rounded-3xl font-medium">
+                            FECHAR
                         </button>
                     </div>
                 </div>
@@ -252,94 +194,36 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="grid md:grid-cols-12 gap-12 items-center">
                 <div class="md:col-span-7">
-                    <h2 class="title-font text-5xl tracking-tighter mb-6">Porquê AutoVision?</h2>
-                    <p class="text-zinc-400 text-xl max-w-lg">
-                        Criámos este site 100% em HTML + Tailwind para seres tu a hospedar facilmente no GitHub Pages. 
-                        Todos os dados são reais e actualizados para 2026. Compara cavalos, torque, peso, cores e preços sem sair de casa!
+                    <h2 class="title-font text-5xl tracking-tighter mb-6">Como customizar?</h2>
+                    <p class="text-zinc-400 text-xl">
+                        Clica em qualquer carro → escolhe uma cor → vê o preço a atualizar ao vivo.<br>
+                        Tudo num único ficheiro index.html. Basta editares o array <strong>carsData</strong> no código para adicionar mais carros ou mudar qualquer estatística.
                     </p>
-                    <div class="flex gap-x-8 mt-12">
-                        <div class="flex items-center gap-x-4">
-                            <i class="fa-solid fa-car text-4xl text-red-500"></i>
-                            <div>
-                                <div class="font-semibold">Dados reais</div>
-                                <div class="text-sm text-zinc-400">De fontes oficiais</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-x-4">
-                            <i class="fa-solid fa-mobile-screen-button text-4xl text-red-500"></i>
-                            <div>
-                                <div class="font-semibold">Totalmente responsivo</div>
-                                <div class="text-sm text-zinc-400">Funciona em telemóvel</div>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-x-4">
-                            <i class="fa-solid fa-code text-4xl text-red-500"></i>
-                            <div>
-                                <div class="font-semibold">Um só ficheiro</div>
-                                <div class="text-sm text-zinc-400">Fácil de editar</div>
-                            </div>
-                        </div>
+                    <div class="mt-8 text-sm bg-zinc-900 p-6 rounded-3xl">
+                        📁 As tuas imagens já estão integradas (nomes exatos que enviaste).<br>
+                        ✏️ Queres mudar preço, cavalos, descrição ou adicionar um 6º carro? Edita o array no final do ficheiro.
                     </div>
                 </div>
-                <div class="md:col-span-5 bg-zinc-900 rounded-3xl p-8">
-                    <div class="flex items-center justify-center h-80 bg-gradient-to-br from-red-500 to-orange-500 rounded-3xl text-center">
-                        <div class="text-center">
-                            <i class="fa-solid fa-car-side text-9xl mb-6 opacity-30"></i>
-                            <p class="text-3xl font-medium title-font">Pronto para o teu próximo carro?</p>
-                        </div>
-                    </div>
+                <div class="md:col-span-5 text-center">
+                    <i class="fa-solid fa-car-side text-[180px] text-red-600/10"></i>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-black border-t border-zinc-800 py-12">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-y-6">
-                <div class="flex items-center gap-x-3">
-                    <div class="w-8 h-8 bg-red-600 rounded-2xl flex items-center justify-center">
-                        <i class="fa-solid fa-car-side"></i>
-                    </div>
-                    <p class="title-font text-2xl">AutoVision</p>
-                </div>
-                
-                <p class="text-zinc-400 text-sm">
-                    © 2026 • Site criado por Grok para GitHub Pages • Um ficheiro só (index.html)
-                </p>
-                
-                <div class="flex items-center gap-x-6 text-xl">
-                    <a href="https://github.com" target="_blank" class="hover:text-red-500 transition-colors"><i class="fa-brands fa-github"></i></a>
-                    <a href="#" class="hover:text-red-500 transition-colors"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" class="hover:text-red-500 transition-colors"><i class="fa-brands fa-x-twitter"></i></a>
-                </div>
-                
-                <div class="text-xs uppercase text-zinc-500 flex items-center gap-x-1">
-                    <span>Made with ❤️ e Tailwind</span>
-                </div>
-            </div>
-        </div>
+    <footer class="bg-black border-t border-zinc-800 py-12 text-center text-xs text-zinc-500">
+        © 2026 AutoVision • Feito para ti com as tuas imagens • GitHub Pages ready
     </footer>
 
     <script>
-        // Configuração Tailwind
-        function initTailwind() {
-            tailwind.config = {
-                content: [],
-                theme: {
-                    extend: {}
-                }
-            }
-        }
-
-        // Dados dos carros (podes editar ou adicionar facilmente)
+        // ==================== DADOS DOS 5 CARROS (com as tuas imagens) ====================
         const carsData = [
             {
                 id: 1,
                 name: "Tesla Model S Plaid",
                 type: "eletrico",
-                image: "https://picsum.photos/id/1015/800/600",
-                description: "O sedan elétrico mais rápido do mundo. Aceleração brutal, autonomia épica e tecnologia de condução autónoma de última geração.",
+                image: "imagem_2026-03-30_191042503.png",
+                description: "O sedan elétrico mais rápido do mundo. Aceleração brutal e autonomia de referência.",
                 hp: "1020 cv",
                 torque: "1050 Nm",
                 weight: "2160 kg",
@@ -351,14 +235,14 @@
                     { name: "Branco Pérola", hex: "#F5F5F5" },
                     { name: "Azul Profundo", hex: "#0A2540" }
                 ],
-                price: "€ 109.990"
+                basePrice: "€ 109.990"
             },
             {
                 id: 2,
                 name: "Ferrari 296 GTB",
                 type: "desportivo",
-                image: "https://picsum.photos/id/1005/800/600",
-                description: "Supercarro híbrido plug-in com motor V6 biturbo e motor elétrico. Pura emoção italiana em cada curva.",
+                image: "imagem_2026-03-30_190956712.png",
+                description: "Supercarro híbrido com motor V6 biturbo e motor elétrico. Emoção pura.",
                 hp: "830 cv",
                 torque: "740 Nm",
                 weight: "1470 kg",
@@ -370,14 +254,14 @@
                     { name: "Nero Daytona", hex: "#1C1C1C" },
                     { name: "Bianco Avus", hex: "#F8F8F8" }
                 ],
-                price: "€ 319.000"
+                basePrice: "€ 319.000"
             },
             {
                 id: 3,
                 name: "Ford Mustang Dark Horse",
                 type: "muscle",
-                image: "https://picsum.photos/id/1016/800/600",
-                description: "O icónico muscle car americano renovado. Motor V8 5.0L com som lendário e desempenho de pista.",
+                image: "imagem_2026-03-30_190842056.png",
+                description: "Muscle car americano com V8 5.0L e som lendário.",
                 hp: "500 cv",
                 torque: "560 Nm",
                 weight: "1770 kg",
@@ -389,14 +273,14 @@
                     { name: "Azul Atlas", hex: "#003087" },
                     { name: "Branco Oxford", hex: "#EDEDED" }
                 ],
-                price: "€ 68.500"
+                basePrice: "€ 68.500"
             },
             {
                 id: 4,
                 name: "Porsche 911 Carrera GTS",
                 type: "desportivo",
-                image: "https://picsum.photos/id/133/800/600",
-                description: "O Porsche 911 mais versátil de sempre. Motor híbrido leve, agilidade extrema e conforto para uso diário.",
+                image: "imagem_2026-03-30_191131133.png",
+                description: "O Porsche 911 mais versátil. Híbrido leve e desempenho excecional.",
                 hp: "532 cv",
                 torque: "610 Nm",
                 weight: "1620 kg",
@@ -408,33 +292,14 @@
                     { name: "Jet Black Metallic", hex: "#1A1A1A" },
                     { name: "Shark Blue", hex: "#0066CC" }
                 ],
-                price: "€ 159.900"
+                basePrice: "€ 159.900"
             },
             {
                 id: 5,
-                name: "Lamborghini Huracán Tecnica",
-                type: "desportivo",
-                image: "https://picsum.photos/id/160/800/600",
-                description: "Design agressivo, motor V10 atmosférico e som inesquecível. A última geração de um verdadeiro supercarro.",
-                hp: "640 cv",
-                torque: "600 Nm",
-                weight: "1420 kg",
-                acceleration: "0-100 km/h em 3.2s",
-                topSpeed: "325 km/h",
-                colors: [
-                    { name: "Verde Gea", hex: "#00A651" },
-                    { name: "Arancio Borealis", hex: "#FF6600" },
-                    { name: "Nero Noctis", hex: "#0F0F0F" },
-                    { name: "Blu Eleos", hex: "#0033A0" }
-                ],
-                price: "€ 249.000"
-            },
-            {
-                id: 6,
                 name: "BMW M3 Competition",
                 type: "desportivo",
-                image: "https://picsum.photos/id/201/800/600",
-                description: "Sedã desportivo com motor 6 cilindros em linha biturbo. Equilíbrio perfeito entre performance e conforto.",
+                image: "imagem_2026-03-30_191206388.png",
+                description: "Sedã desportivo com 6 cilindros em linha biturbo. Equilíbrio perfeito.",
                 hp: "510 cv",
                 torque: "650 Nm",
                 weight: "1730 kg",
@@ -446,169 +311,161 @@
                     { name: "Toronto Red", hex: "#B71C1C" },
                     { name: "Frozen Pure Grey", hex: "#C8C8C8" }
                 ],
-                price: "€ 98.500"
+                basePrice: "€ 98.500"
             }
         ]
 
-        // Renderizar os cartões
-        function renderCars(filteredCars) {
+        let currentCar = null
+        let selectedColor = null
+
+        // Renderizar grid
+        function renderCars() {
             const grid = document.getElementById('cars-grid')
             grid.innerHTML = ''
             
-            filteredCars.forEach(car => {
-                const cardHTML = `
-                <div onclick="showCarModal(${car.id})" class="car-card bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer">
-                    <div class="relative">
-                        <img src="${car.image}" alt="${car.name}" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 right-4 bg-black/70 text-xs font-bold px-4 py-2 rounded-3xl backdrop-blur-md">
-                            ${car.type === 'eletrico' ? '⚡ Elétrico' : car.type === 'muscle' ? '🔥 Muscle' : '🏎️ Desportivo'}
-                        </div>
+            carsData.forEach(car => {
+                const card = document.createElement('div')
+                card.className = 'car-card bg-zinc-900 rounded-3xl overflow-hidden cursor-pointer'
+                card.innerHTML = `
+                <div class="relative">
+                    <img src="${car.image}" alt="${car.name}" class="w-full h-64 object-cover">
+                    <div class="absolute top-4 right-4 bg-black/70 text-xs font-bold px-4 py-2 rounded-3xl">
+                        ${car.type === 'eletrico' ? '⚡ Elétrico' : car.type === 'muscle' ? '🔥 Muscle' : '🏎️ Desportivo'}
                     </div>
-                    <div class="p-6">
-                        <div class="flex justify-between items-baseline">
-                            <h3 class="font-semibold text-2xl">${car.name}</h3>
-                            <span class="text-red-500 font-bold text-xl">${car.price}</span>
-                        </div>
-                        
-                        <p class="text-zinc-400 text-sm line-clamp-2 mt-2 mb-6">${car.description}</p>
-                        
-                        <!-- Mini stats -->
-                        <div class="grid grid-cols-3 gap-4 text-center text-xs">
-                            <div>
-                                <div class="text-red-400">${car.hp}</div>
-                                <div class="text-zinc-500">Cavalos</div>
-                            </div>
-                            <div>
-                                <div class="text-red-400">${car.torque}</div>
-                                <div class="text-zinc-500">Torque</div>
-                            </div>
-                            <div>
-                                <div class="text-red-400">${car.weight}</div>
-                                <div class="text-zinc-500">Peso</div>
-                            </div>
-                        </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between">
+                        <h3 class="font-semibold text-2xl">${car.name}</h3>
+                        <span class="text-red-500 font-bold">${car.basePrice}</span>
+                    </div>
+                    <p class="text-zinc-400 text-sm line-clamp-2 mt-3">${car.description}</p>
+                    
+                    <div class="grid grid-cols-3 gap-2 mt-6 text-center text-xs">
+                        <div><div class="text-red-400">${car.hp}</div><div class="text-zinc-500">Cavalos</div></div>
+                        <div><div class="text-red-400">${car.torque}</div><div class="text-zinc-500">Torque</div></div>
+                        <div><div class="text-red-400">${car.weight}</div><div class="text-zinc-500">Peso</div></div>
                     </div>
                 </div>`
-                
-                grid.innerHTML += cardHTML
+                card.onclick = () => showCarModal(car.id)
+                grid.appendChild(card)
             })
-            
-            // Se não houver carros
-            if (filteredCars.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-20 text-zinc-400">
-                    <i class="fa-solid fa-car-side text-6xl mb-4"></i>
-                    <p>Nenhum carro encontrado com este filtro.</p>
-                </div>`
-            }
         }
 
-        // Mostrar modal
+        // Mostrar modal com customização
         function showCarModal(id) {
-            const car = carsData.find(c => c.id === id)
-            if (!car) return
+            currentCar = carsData.find(c => c.id === id)
+            if (!currentCar) return
+
+            selectedColor = null
+
+            // Imagem
+            const imageHTML = `
+                <img src="${currentCar.image}" alt="${currentCar.name}" class="w-full h-full object-cover">
+                <div id="color-overlay" class="preview-overlay"></div>
+                <div class="absolute bottom-6 left-6 bg-black/70 px-5 py-2 rounded-3xl text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-car"></i> ${currentCar.name}
+                </div>`
+            document.getElementById('modal-image').innerHTML = imageHTML
+
+            // Nome, descrição e badge
+            document.getElementById('modal-name').textContent = currentCar.name
+            document.getElementById('modal-description').textContent = currentCar.description
             
-            // Preencher imagem
-            const imageContainer = document.getElementById('modal-image')
-            imageContainer.innerHTML = `
-                <img src="${car.image}" alt="${car.name}" class="w-full h-full object-cover">
-                <div class="absolute bottom-6 left-6 bg-black/70 text-white px-5 py-2 rounded-3xl text-sm flex items-center gap-x-2">
-                    <i class="fa-solid fa-car"></i>
-                    ${car.name}
-                </div>
-            `
-            // Preencher nome e descrição
-            document.getElementById('modal-name').textContent = car.name
-            document.getElementById('modal-description').textContent = car.description
-            
-            // Badge tipo
             const badge = document.getElementById('modal-type-badge')
-            badge.textContent = car.type === 'eletrico' ? '⚡ ELÉTRICO' : car.type === 'muscle' ? '🔥 MUSCLE' : '🏎️ DESPORTIVO'
-            badge.className = `px-4 py-1 text-xs font-semibold rounded-3xl ${car.type === 'eletrico' ? 'bg-emerald-500' : car.type === 'muscle' ? 'bg-orange-500' : 'bg-red-500'}`
-            
+            badge.textContent = currentCar.type === 'eletrico' ? '⚡ ELÉTRICO' : currentCar.type === 'muscle' ? '🔥 MUSCLE' : '🏎️ DESPORTIVO'
+            badge.className = `px-5 py-1 text-xs font-semibold rounded-3xl ${currentCar.type === 'eletrico' ? 'bg-emerald-500' : currentCar.type === 'muscle' ? 'bg-orange-500' : 'bg-red-500'}`
+
             // Estatísticas
-            const statsHTML = `
-                <div class="flex justify-between items-center bg-zinc-800/50 rounded-2xl p-4">
-                    <div><span class="block text-xs text-zinc-400">CAVALOS</span><span class="text-3xl font-semibold">${car.hp}</span></div>
-                    <div class="w-px h-12 bg-zinc-700"></div>
-                    <div><span class="block text-xs text-zinc-400">TORQUE</span><span class="text-3xl font-semibold">${car.torque}</span></div>
-                    <div class="w-px h-12 bg-zinc-700"></div>
-                    <div><span class="block text-xs text-zinc-400">PESO</span><span class="text-3xl font-semibold">${car.weight}</span></div>
+            document.getElementById('modal-stats').innerHTML = `
+                <div class="bg-zinc-800/50 rounded-2xl p-5 flex justify-between">
+                    <div><span class="block text-xs text-zinc-400">CAVALOS</span><span class="text-3xl">${currentCar.hp}</span></div>
+                    <div><span class="block text-xs text-zinc-400">TORQUE</span><span class="text-3xl">${currentCar.torque}</span></div>
+                    <div><span class="block text-xs text-zinc-400">PESO</span><span class="text-3xl">${currentCar.weight}</span></div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 mt-4">
-                    <div class="bg-zinc-800/50 rounded-2xl p-4">
-                        <span class="text-xs text-zinc-400">0-100 km/h</span>
-                        <p class="text-2xl font-medium">${car.acceleration}</p>
-                    </div>
-                    <div class="bg-zinc-800/50 rounded-2xl p-4">
-                        <span class="text-xs text-zinc-400">Vel. Máx.</span>
-                        <p class="text-2xl font-medium">${car.topSpeed}</p>
-                    </div>
+                    <div class="bg-zinc-800/50 rounded-2xl p-5"><span class="text-xs text-zinc-400">0-100 km/h</span><p class="text-2xl">${currentCar.acceleration}</p></div>
+                    <div class="bg-zinc-800/50 rounded-2xl p-5"><span class="text-xs text-zinc-400">Vel. Máx.</span><p class="text-2xl">${currentCar.topSpeed}</p></div>
                 </div>`
-            document.getElementById('modal-stats').innerHTML = statsHTML
-            
-            // Cores
+
+            // Cores com clique para customização
             const colorsContainer = document.getElementById('modal-colors')
-            colorsContainer.innerHTML = car.colors.map(color => `
+            colorsContainer.innerHTML = currentCar.colors.map((color, index) => `
                 <div class="flex flex-col items-center">
-                    <div onclick="this.style.transform='scale(1.3)'" 
-                         class="color-swatch w-12 h-12 rounded-2xl shadow-inner cursor-pointer" 
+                    <div onclick="selectColor(${index})" 
+                         class="color-swatch w-14 h-14 rounded-2xl shadow-inner" 
                          style="background-color: ${color.hex}"></div>
-                    <span class="text-xs mt-2 text-zinc-400">${color.name}</span>
+                    <span class="text-xs text-zinc-400 mt-2">${color.name}</span>
                 </div>`).join('')
-            
-            // Preço
-            document.getElementById('modal-price').innerHTML = `
-                <span class="text-red-500">${car.price}</span>
-                <span class="text-base font-normal text-zinc-400 ml-3">+ impostos</span>`
-            
+
+            // Preço inicial
+            updatePriceDisplay()
+
             // Mostrar modal
             document.getElementById('car-modal').classList.remove('hidden')
             document.getElementById('car-modal').classList.add('flex')
+        }
+
+        function selectColor(index) {
+            selectedColor = currentCar.colors[index]
+            
+            // Remove selected de todos
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'))
+            
+            // Marca o selecionado
+            const swatches = document.querySelectorAll('.color-swatch')
+            swatches[index].classList.add('selected')
+            
+            // Atualiza barra de preview
+            document.getElementById('selected-color-name').textContent = selectedColor.name
+            document.getElementById('color-preview-bar').style.backgroundColor = selectedColor.hex
+            
+            // Aplica overlay na imagem (simula pintura)
+            const overlay = document.getElementById('color-overlay')
+            overlay.style.backgroundColor = selectedColor.hex
+            
+            // Atualiza preço (pequeno acréscimo para cores especiais)
+            updatePriceDisplay()
+        }
+
+        function updatePriceDisplay() {
+            let price = parseFloat(currentCar.basePrice.replace('€ ', '').replace('.', '').replace(',', '.'))
+            let note = ''
+            
+            if (selectedColor) {
+                // Simula acréscimo de cor premium
+                price += 4500
+                note = '+ € 4.500 (cor personalizada)'
+            }
+            
+            document.getElementById('modal-price').innerHTML = `€ ${price.toLocaleString('pt-PT')}`
+            document.getElementById('price-note').innerHTML = note
+        }
+
+        function saveCustomization() {
+            if (!selectedColor) {
+                alert('✅ Customização guardada!\n\nCor: Padrão original\nPreço: ' + currentCar.basePrice)
+            } else {
+                alert(`✅ Customização guardada com sucesso!\n\nCarro: ${currentCar.name}\nCor: ${selectedColor.name}\nPreço final estimado: ${document.getElementById('modal-price').textContent}`)
+            }
+            hideModal()
         }
 
         function hideModal() {
             const modal = document.getElementById('car-modal')
             modal.classList.add('hidden')
             modal.classList.remove('flex')
+            currentCar = null
+            selectedColor = null
         }
 
-        // Filtro
-        function filterCars(type) {
-            // Remover active de todos
-            document.querySelectorAll('button[id^="filter-"]').forEach(btn => {
-                btn.classList.remove('active-filter', 'bg-white', 'text-black')
-                btn.classList.add('border', 'border-white/20')
-            })
-            
-            if (type === 'all') {
-                document.getElementById('filter-all').classList.add('active-filter', 'bg-white', 'text-black')
-                renderCars(carsData)
-            } else {
-                const btn = document.getElementById(`filter-${type}`)
-                if (btn) btn.classList.add('active-filter', 'bg-white', 'text-black')
-                const filtered = carsData.filter(car => car.type === type)
-                renderCars(filtered)
-            }
-        }
-
-        // Mostrar um carro aleatório
-        function showRandomCar() {
-            const randomIndex = Math.floor(Math.random() * carsData.length)
-            showCarModal(carsData[randomIndex].id)
-        }
-
-        // Dark mode toggle (já está em dark por defeito)
         function toggleDarkMode() {
-            alert("🌙 Este site já está em modo escuro premium! Perfeito para ver carros à noite 🚗")
+            alert('🌙 Este site já está em modo escuro premium!')
         }
 
         // Inicialização
         window.onload = function() {
-            initTailwind()
-            renderCars(carsData)
-            
-            console.log('%c✅ index.html carregado com sucesso! Pronto para GitHub Pages 🚀', 'color:#ff0000; font-family:monospace; font-size:12px')
-            console.log('Podes editar o array carsData para adicionar mais carros facilmente.')
+            renderCars()
+            console.log('%c✅ index.html carregado com as TUAS imagens e customização ao vivo!', 'color:#ff0000; font-size:14px')
         }
     </script>
 </body>
